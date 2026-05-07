@@ -1,0 +1,17 @@
+//
+//  CH3_Group13App.swift
+//  CH3_Group13
+//
+//  Created by Muhammad Darrel Prawira on 07/05/26.
+//
+
+import SwiftUI
+
+@main
+struct CH3_Group13App: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
