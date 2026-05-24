@@ -11,34 +11,20 @@ struct EventInfoRowView: View {
 
     var event: Event
 
-    private var dateText: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .full
-        formatter.timeStyle = .none
-        return formatter.string(from: event.date)
-    }
-
-    private var timeText: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        return formatter.string(from: event.date)
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
 
             HStack(spacing: 10) {
                 Image(systemName: "calendar")
                     .foregroundStyle(.blue)
-                Text(dateText)
+                Text(event.formattedDate)
                     .font(.subheadline)
             }
 
             HStack(spacing: 10) {
                 Image(systemName: "clock")
                     .foregroundStyle(.blue)
-                Text(timeText)
+                Text(event.formattedTime)
                     .font(.subheadline)
             }
 
