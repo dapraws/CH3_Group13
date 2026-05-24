@@ -15,6 +15,7 @@ struct MissionCardView: View {
     var onComplete: () -> Void = {}
 
     @State private var showProof: Bool = false
+    @State private var showReward: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -42,10 +43,25 @@ struct MissionCardView: View {
         .background(Color(.systemGray6))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .sheet(isPresented: $showProof) {
-            MissionProofView(mission: mission, onSubmit: {
-                showProof = false
-                onComplete()
-            })
+            MissionProofView(
+                mission: mission,
+                onSubmit: {
+                    showProof = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        showReward = true
+                    }
+                    onComplete()
+                }
+            )
+        }
+        .sheet(isPresented: $showReward) {
+            MissionRewardPopup(
+                rewardMessage: mission.reward,
+                onDismiss: {
+                    showReward = false
+                }
+            )
+            .presentationDetents([.medium]) 
         }
     }
 }
