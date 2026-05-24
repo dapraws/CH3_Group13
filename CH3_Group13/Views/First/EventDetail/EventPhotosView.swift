@@ -13,7 +13,7 @@ struct EventPhotoView: View {
 
     var body: some View {
 
-        if let _ = photoPath {
+        if photoPath != nil {
             Rectangle()
                 .fill(Color.gray.opacity(0.3))
                 .frame(maxWidth: .infinity)

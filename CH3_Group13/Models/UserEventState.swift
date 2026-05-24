@@ -12,10 +12,9 @@ import SwiftData
 class UserEventState {
     @Attribute(.unique) var eventId: UUID
     var joinedAt: Date?
-    
+
     init(eventId: UUID) {
         self.eventId = eventId
         self.joinedAt = Date()
     }
 }
-
