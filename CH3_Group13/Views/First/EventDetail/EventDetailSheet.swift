@@ -34,6 +34,8 @@ struct EventDetailSheet: View {
                             }
                         }
                     }
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
 
                     Text(event.name)
                         .font(.title2)
