@@ -32,6 +32,13 @@ struct MissionRewardPopup: View {
                 .buttonStyle(.borderedProminent)
         }
         .padding(32)
+        .background(Color(.white))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(.black, lineWidth: 2)
+        )
+        .padding(16)
     }
 }
 

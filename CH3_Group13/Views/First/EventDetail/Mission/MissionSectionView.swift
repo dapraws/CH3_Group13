@@ -12,6 +12,7 @@ struct MissionSectionView: View {
     var missions: [Mission]
     var isJoined: Bool
     var onJoin: () -> Void
+    var onMissionComplete: (String) -> Void = { _ in }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -22,20 +23,28 @@ struct MissionSectionView: View {
             if isJoined {
                 // UNLOCKED
                 ForEach(missions) { mission in
-                    MissionCardView(mission: mission, onComplete: {
-                        // TODO (Darrel): logic
-                    })
+                    MissionCardView(
+                        mission: mission,
+                        onComplete: {
+                            rewardMessage in
+                            onMissionComplete(rewardMessage)
+
+                        }
+                    )
                 }
             } else {
                 // LOCKED
                 ZStack {
                     VStack(spacing: 12) {
                         ForEach(missions) { mission in
-                            MissionCardView(mission: mission, onComplete: {})
+                            MissionCardView(
+                                mission: mission,
+                                onComplete: { _ in }
+                            )
                         }
                     }
                     .blur(radius: 4)
-                    .allowsHitTesting(false) // prevents tapping through the blur
+                    .allowsHitTesting(false)  // prevents tapping through the blur
 
                     VStack(spacing: 12) {
                         Image(systemName: "lock.fill")
@@ -51,7 +60,10 @@ struct MissionSectionView: View {
                             .buttonStyle(.borderedProminent)
                     }
                     .padding()
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                    .background(
+                        .ultraThinMaterial,
+                        in: RoundedRectangle(cornerRadius: 16)
+                    )
                 }
             }
         }

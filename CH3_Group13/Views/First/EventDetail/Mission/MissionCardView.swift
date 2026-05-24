@@ -12,7 +12,7 @@ struct MissionCardView: View {
     var mission: Mission
 
     // TODO (Darrel): logic
-    var onComplete: () -> Void = {}
+    var onComplete: (String) -> Void = { _ in }
 
     @State private var showProof: Bool = false
     @State private var showReward: Bool = false
@@ -50,18 +50,9 @@ struct MissionCardView: View {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                         showReward = true
                     }
-                    onComplete()
+                    onComplete(mission.reward)
                 }
             )
-        }
-        .sheet(isPresented: $showReward) {
-            MissionRewardPopup(
-                rewardMessage: mission.reward,
-                onDismiss: {
-                    showReward = false
-                }
-            )
-            .presentationDetents([.medium]) 
         }
     }
 }
