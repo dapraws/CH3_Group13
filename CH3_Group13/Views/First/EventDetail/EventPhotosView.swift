@@ -1,0 +1,51 @@
+//
+//  EventPhotosView.swift
+//  CH3_Group13
+//
+//  Created by Muhammad Darrel Prawira on 23/05/26.
+//
+
+import SwiftUI
+
+struct EventPhotoView: View {
+
+    var photoPath: String?
+
+    var body: some View {
+
+        if photoPath != nil {
+            Rectangle()
+                .fill(Color.gray.opacity(0.3))
+                .frame(maxWidth: .infinity)
+                .frame(height: 220)
+                .overlay(
+                    Image(systemName: "photo")
+                        .foregroundStyle(.gray)
+                        .font(.largeTitle)
+                )
+        } else {
+            Rectangle()
+                .fill(Color.gray.opacity(0.15))
+                .frame(maxWidth: .infinity)
+                .frame(height: 220)
+                .overlay(
+                    VStack(spacing: 8) {
+                        Image(systemName: "photo")
+                            .foregroundStyle(.gray)
+                            .font(.largeTitle)
+                        Text("No photo")
+                            .font(.caption)
+                            .foregroundStyle(.gray)
+                    }
+                )
+        }
+    }
+}
+
+#Preview("With Photo") {
+    EventPhotoView(photoPath: "some_path")
+}
+
+#Preview("No Photo") {
+    EventPhotoView(photoPath: nil)
+}
