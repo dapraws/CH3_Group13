@@ -6,13 +6,80 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct MissionProofView: View {
+
+    var mission: Mission
+    var onSubmit: () -> Void = {}
+
+    @State private var selectedItem: PhotosPickerItem? = nil
+
+    @State private var previewImage: Image? = nil
+
     var body: some View {
-        Text("MissionProofView")
+        VStack(spacing: 24) {
+
+            Text(mission.name)
+                .font(.title2)
+                .bold()
+
+            Text(mission.desc)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+
+            if let previewImage {
+                previewImage
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 200)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            } else {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.gray.opacity(0.15))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 200)
+                    .overlay(
+                        VStack(spacing: 8) {
+                            Image(systemName: "camera")
+                                .font(.largeTitle)
+                                .foregroundStyle(.gray)
+                            Text("Pick a photo as proof")
+                                .font(.caption)
+                                .foregroundStyle(.gray)
+                        }
+                    )
+            }
+
+            PhotosPicker(
+                selection: $selectedItem,
+                matching: .images
+            ) {
+                Label("Choose Photo", systemImage: "photo.on.rectangle")
+            }
+            .buttonStyle(.bordered)
+
+            Button("Submit Proof") {
+                // TODO (Darrel): logic
+                onSubmit()
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(previewImage == nil)
+
+        }
+        .padding()
+        .onChange(of: selectedItem) { _, newItem in
+            Task {
+                if let data = try? await newItem?.loadTransferable(type: Data.self),
+                   let uiImage = UIImage(data: data) {
+                    previewImage = Image(uiImage: uiImage)
+                }
+            }
+        }
     }
 }
 
 #Preview {
-    MissionProofView()
+    MissionProofView(mission: TempData.soloMission1)
 }

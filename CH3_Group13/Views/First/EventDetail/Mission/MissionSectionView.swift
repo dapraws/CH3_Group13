@@ -20,16 +20,15 @@ struct MissionSectionView: View {
                 .font(.headline)
 
             if isJoined {
-                // UNLOCKED — show real mission cards
+                // UNLOCKED
                 ForEach(missions) { mission in
                     MissionCardView(mission: mission, onComplete: {
-                        // TODO (Darrel): wire to ViewModel
+                        // TODO (Darrel): logic
                     })
                 }
             } else {
-                // LOCKED — blurred cards + join button overlay
+                // LOCKED
                 ZStack {
-                    // Blurred mission cards behind the lock
                     VStack(spacing: 12) {
                         ForEach(missions) { mission in
                             MissionCardView(mission: mission, onComplete: {})
@@ -38,7 +37,6 @@ struct MissionSectionView: View {
                     .blur(radius: 4)
                     .allowsHitTesting(false) // prevents tapping through the blur
 
-                    // Lock overlay on top
                     VStack(spacing: 12) {
                         Image(systemName: "lock.fill")
                             .font(.largeTitle)

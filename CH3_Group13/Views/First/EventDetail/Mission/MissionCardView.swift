@@ -11,26 +11,21 @@ struct MissionCardView: View {
 
     var mission: Mission
 
-    // Called when user taps Complete
-    // TODO (Darrel): wire to ViewModel
+    // TODO (Darrel): logic
     var onComplete: () -> Void = {}
 
-    // Controls whether MissionProofView is showing
     @State private var showProof: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
 
-            // Mission name
             Text(mission.name)
                 .font(.headline)
 
-            // Mission description
             Text(mission.desc)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
-            // Completed or complete button
             if mission.isCompleted {
                 Label("Completed", systemImage: "checkmark.circle.fill")
                     .foregroundStyle(.green)

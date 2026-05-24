@@ -7,12 +7,45 @@
 
 import SwiftUI
 
-struct EventPhotosView: View {
+struct EventPhotoView: View {
+
+    var photoPath: String?
+
     var body: some View {
-        Text("EventPhotosView")
+
+        if let _ = photoPath {
+            Rectangle()
+                .fill(Color.gray.opacity(0.3))
+                .frame(maxWidth: .infinity)
+                .frame(height: 220)
+                .overlay(
+                    Image(systemName: "photo")
+                        .foregroundStyle(.gray)
+                        .font(.largeTitle)
+                )
+        } else {
+            Rectangle()
+                .fill(Color.gray.opacity(0.15))
+                .frame(maxWidth: .infinity)
+                .frame(height: 220)
+                .overlay(
+                    VStack(spacing: 8) {
+                        Image(systemName: "photo")
+                            .foregroundStyle(.gray)
+                            .font(.largeTitle)
+                        Text("No photo")
+                            .font(.caption)
+                            .foregroundStyle(.gray)
+                    }
+                )
+        }
     }
 }
 
-#Preview {
-    EventPhotosView()
+#Preview("With Photo") {
+    EventPhotoView(photoPath: "some_path")
+}
+
+#Preview("No Photo") {
+    EventPhotoView(photoPath: nil)
 }
