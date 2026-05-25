@@ -9,22 +9,34 @@ import SwiftUI
 
 struct MissionSectionView: View {
 
-    var missions: [Mission]
+    @Binding var missions: [Mission]
     var isJoined: Bool
     var onJoin: () -> Void
     var onMissionComplete: (String) -> Void = { _ in }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-
+            
+            if !isJoined {
+                Button("Register", action: onJoin)
+                                        .buttonStyle(.borderedProminent)
+                                        .fontWeight(.semibold)
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .padding()
+                                        .background(Color.blue)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(12)
+            }
+            
+            Divider()
             Text("Missions")
                 .font(.headline)
 
             if isJoined {
                 // UNLOCKED
-                ForEach(missions) { mission in
+                ForEach($missions) { $mission in
                     MissionCardView(
-                        mission: mission,
+                        mission: $mission,
                         onComplete: {
                             rewardMessage in
                             onMissionComplete(rewardMessage)
@@ -36,9 +48,9 @@ struct MissionSectionView: View {
                 // LOCKED
                 ZStack {
                     VStack(spacing: 12) {
-                        ForEach(missions) { mission in
+                        ForEach($missions) { $mission in
                             MissionCardView(
-                                mission: mission,
+                                mission: $mission,
                                 onComplete: { _ in }
                             )
                         }
@@ -56,8 +68,6 @@ struct MissionSectionView: View {
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
 
-                        Button("Join Event", action: onJoin)
-                            .buttonStyle(.borderedProminent)
                     }
                     .padding()
                     .background(
@@ -67,12 +77,13 @@ struct MissionSectionView: View {
                 }
             }
         }
+
     }
 }
 
 #Preview("Locked") {
     MissionSectionView(
-        missions: TempData.event1.missions,
+        missions: .constant(TempData.event1.missions),
         isJoined: false,
         onJoin: {}
     )
@@ -81,7 +92,7 @@ struct MissionSectionView: View {
 
 #Preview("Unlocked") {
     MissionSectionView(
-        missions: TempData.event1.missions,
+        missions: .constant(TempData.event1.missions),
         isJoined: true,
         onJoin: {}
     )

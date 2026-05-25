@@ -8,21 +8,15 @@
 import SwiftUI
 
 struct EventPhotoView: View {
-
     var photoPath: String?
 
     var body: some View {
 
         if photoPath != nil {
-            Rectangle()
-                .fill(Color.gray.opacity(0.3))
+            Image("\(photoPath!)")
+                .resizable()
                 .frame(maxWidth: .infinity)
                 .frame(height: 220)
-                .overlay(
-                    Image(systemName: "photo")
-                        .foregroundStyle(.gray)
-                        .font(.largeTitle)
-                )
         } else {
             Rectangle()
                 .fill(Color.gray.opacity(0.15))

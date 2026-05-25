@@ -9,14 +9,13 @@ import SwiftUI
 
 struct MissionCardView: View {
 
-    var mission: Mission
+    @Binding var mission: Mission
 
     // TODO (Darrel): logic
     var onComplete: (String) -> Void = { _ in }
 
     @State private var showProof: Bool = false
     @State private var showReward: Bool = false
-
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
 
@@ -46,6 +45,7 @@ struct MissionCardView: View {
             MissionProofView(
                 mission: mission,
                 onSubmit: {
+                    mission.isCompleted = true
                     showProof = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                         showReward = true
@@ -58,11 +58,15 @@ struct MissionCardView: View {
 }
 
 #Preview("Incomplete") {
-    MissionCardView(mission: TempData.soloMission1)
-        .padding()
+    MissionCardView(
+        mission: .constant(TempData.soloMission1)
+    )
+    .padding()
 }
 
 #Preview("Completed") {
-    MissionCardView(mission: TempData.completedMission)
-        .padding()
+    MissionCardView(
+        mission: .constant(TempData.completedMission)
+    )
+    .padding()
 }

@@ -13,8 +13,15 @@ struct EventDetailSheet: View {
 
     @State private var isJoined: Bool = false
 
+    @State private var missions: [Mission]
+
     @State private var showReward: Bool = false
     @State private var rewardMessage: String = ""
+    
+    init(event: Event) {
+            self.event = event
+            _missions = State(initialValue: event.missions)
+        }
 
     var body: some View {
         ZStack {
@@ -42,13 +49,17 @@ struct EventDetailSheet: View {
                         Text(event.name)
                             .font(.title2)
                             .bold()
+                        
+                        Text("The top 10 volleyball players in the world are going to be invited to this event!")
+                            .fontWeight(.light)
 
-                        EventInfoRowView(event: event)
-
-                        Divider()
+                        HStack(alignment:.top){
+                            EventInfoRowView(event: event)
+                            
+                        }
 
                         MissionSectionView(
-                            missions: event.missions,
+                            missions: $missions,
                             isJoined: isJoined,
                             onJoin: {
                                 isJoined = true
@@ -61,6 +72,7 @@ struct EventDetailSheet: View {
                     }
                     .padding()
                 }
+    
             }
             if showReward {
                 Color.white.opacity(0)
