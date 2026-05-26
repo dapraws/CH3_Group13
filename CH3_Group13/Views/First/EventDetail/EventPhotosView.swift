@@ -9,14 +9,18 @@ import SwiftUI
 
 struct EventPhotoView: View {
     var photoPath: String?
-
+    
     var body: some View {
-
+        
         if photoPath != nil {
-            Image("\(photoPath!)")
-                .resizable()
-                .frame(maxWidth: .infinity)
-                .frame(height: 220)
+            if let path = photoPath {
+                Image(path)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 220)
+                    .clipped()
+            }
         } else {
             Rectangle()
                 .fill(Color.gray.opacity(0.15))
