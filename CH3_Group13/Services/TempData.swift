@@ -8,65 +8,61 @@
 import Foundation
 
 struct TempData {
-
-    // Events
-
+    
     static let event1 = Event(
-        name: "Bali Beach Volleyball Open",
-        category: ["volleyball", "beach", "outdoor"],
+        name: "Kuta 5.02K Run",
+        venueName: "Apple Developer Academy @BINUS",
+        eventDescription: "A morning run with a precise 5.02 km route across the Academy area. Perfect for all running levels!",
+        category: ["running"],
         date: Date().addingTimeInterval(86400),
-        latitude: -8.7184,
-        longitude: 115.1686,
+        latitude: -8.736971027324335,
+        longitude: 115.17593161526648,
+        maxParticipants: 50,
+        currentParticipants: 38,
         missions: [soloMission1, soloMission2]
     )
-
+    
     static let event2 = Event(
-        name: "Seminyak Sunday Run",
-        category: ["running", "outdoor", "casual"],
+        name: "Crossfit & Gym Open",
+        venueName: "FIT HUB Kuta",
+        eventDescription: "Weightlifting and endurance competitions.",
+        category: ["gym"],
         date: Date().addingTimeInterval(172800),
-        latitude: -8.6916,
-        longitude: 115.1589,
+        latitude: -8.735843212609703,
+        longitude: 115.18154401093946,
+        maxParticipants: 30,
+        currentParticipants: 22,
         missions: [completedMission]
     )
-
+    
     static let event3 = Event(
-        name: "Ubud Football Kickabout",
-        category: ["football", "outdoor", "casual"],
+        name: "Sunset Beach Cycling",
+        venueName: "Kuta Beach",
+        eventDescription: "An evening cycling ride along Kuta Beach.",
+        category: ["cycling"],
         date: Date().addingTimeInterval(259200),
-        latitude: -8.5069,
-        longitude: 115.2625,
-        missions: [
-            Mission(
-                name: "First Touch",
-                desc: "Take a photo of yourself on the pitch before the match starts.",
-                type: .solo,
-                reward: "⚽ You're on the pitch — the game begins with you!"
-            ),
-            Mission(
-                name: "Goal Moment",
-                desc: "Take a photo right after a goal is scored — celebrate it!",
-                type: .solo,
-                reward: "🎉 You captured a goal moment. That's pure football joy!"
-            )
-        ]
+        latitude: -8.717735116507654,
+        longitude: 115.1687207615662,
+        maxParticipants: 25,
+        currentParticipants: 10,
+        missions: []
     )
 
     static let allEvents: [Event] = [event1, event2, event3]
     
-    // Missions
-
+    // MARK: - Data Misi
     static let soloMission1 = Mission(
         name: "Snap the Spike",
         desc: "Take a photo of someone spiking the ball during a match.",
         type: .solo,
-        reward: "🏐 Nice shot! You captured the energy of the game!"
+        reward: "🏐 Nice shot!"
     )
 
     static let soloMission2 = Mission(
         name: "Court Explorer",
         desc: "Take a selfie at each of the 3 courts.",
         type: .solo,
-        reward: "🗺️ You've explored the whole venue — legend!"
+        reward: "🗺️ Legend!"
     )
 
     static let completedMission: Mission = {
