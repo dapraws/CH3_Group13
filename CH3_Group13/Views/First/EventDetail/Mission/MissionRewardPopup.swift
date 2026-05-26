@@ -22,11 +22,12 @@ struct MissionRewardPopup: View {
             Text("Mission Complete!")
                 .font(.title)
                 .bold()
+                .foregroundStyle(Color(.black))
 
             Text(rewardMessage)
                 .font(.body)
                 .multilineTextAlignment(.center)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.gray)
 
             Button("Awesome!", action: onDismiss)
                 .buttonStyle(.borderedProminent)
