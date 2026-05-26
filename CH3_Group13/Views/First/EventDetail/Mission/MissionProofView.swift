@@ -10,7 +10,7 @@ import PhotosUI
 
 struct MissionProofView: View {
 
-    var mission: Mission
+    @Binding var mission: Mission
     var onSubmit: () -> Void = {}
 
     @State private var selectedItem: PhotosPickerItem? = nil
@@ -80,5 +80,5 @@ struct MissionProofView: View {
 }
 
 #Preview {
-    MissionProofView(mission: TempData.soloMission1)
+    MissionProofView(mission: .constant(TempData.soloMission1))
 }

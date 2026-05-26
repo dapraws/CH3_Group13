@@ -43,7 +43,7 @@ struct MissionCardView: View {
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .sheet(isPresented: $showProof) {
             MissionProofView(
-                mission: mission,
+                mission: $mission,
                 onSubmit: {
                     mission.isCompleted = true
                     showProof = false
