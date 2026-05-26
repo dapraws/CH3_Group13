@@ -8,30 +8,25 @@
 import SwiftUI
 
 struct EventDetailSheet: View {
-
+    
     var event: Event
-
-    @State private var isJoined: Bool = false
-
-    @State private var missions: [Mission]
-
-    @State private var showReward: Bool = false
-    @State private var rewardMessage: String = ""
+    
+    @State private var viewModel: EventDetailViewModel
     
     init(event: Event) {
-            self.event = event
-            _missions = State(initialValue: event.missions)
-        }
-
+        self.event = event
+        _viewModel = State(initialValue: EventDetailViewModel(missions: event.missions))
+    }
+    
     var body: some View {
         ZStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-
+                    
                     EventPhotoView(photoPath: event.photoPath)
-
+                    
                     VStack(alignment: .leading, spacing: 16) {
-
+                        
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
                                 ForEach(event.category, id: \.self) { tag in
@@ -45,52 +40,52 @@ struct EventDetailSheet: View {
                                 }
                             }
                         }
-
+                        
                         Text(event.name)
                             .font(.title2)
                             .bold()
                         
                         Text(event.desc)
                             .fontWeight(.light)
-
+                        
                         HStack(alignment:.top){
                             EventInfoRowView(event: event)
                             
                         }
-
+                        
                         MissionSectionView(
-                            missions: $missions,
-                            isJoined: isJoined,
+                            missions: $viewModel.missions,
+                            isJoined: viewModel.isJoined,
                             onJoin: {
-                                isJoined = true
+                                viewModel.isJoined = true
                             },
                             onMissionComplete: { message in
-                                rewardMessage = message
-                                showReward = true
+                                viewModel.rewardMessage = message
+                                viewModel.showReward = true
                             }
                         )
                     }
                     .padding()
                 }
-    
+                
             }
-            if showReward {
+            if viewModel.showReward {
                 Color.white.opacity(0)
                     .ignoresSafeArea()
                     .onTapGesture {
-                        showReward = false
+                        viewModel.showReward = false
                     }
-
+                
                 MissionRewardPopup(
-                    rewardMessage: rewardMessage,
+                    rewardMessage: viewModel.rewardMessage,
                     onDismiss: {
-                        showReward = false
+                        viewModel.showReward = false
                     }
                 )
                 .transition(.scale.combined(with: .opacity))
             }
         }
-        .animation(.spring(duration: 0.3), value: showReward)
+        .animation(.spring(duration: 0.3), value: viewModel.showReward)
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
     }
