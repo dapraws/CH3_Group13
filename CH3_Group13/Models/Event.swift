@@ -12,6 +12,7 @@ import SwiftData
 class Event {
     @Attribute(.unique) var id: UUID
     var name: String
+    var desc: String
     var venueName: String
     var category: [String]
     var date: Date
@@ -23,6 +24,7 @@ class Event {
     init(
         id: UUID = UUID(),
         name: String,
+        desc: String,
         venueName: String,
         category: [String] = [],
         date: Date = Date(),
@@ -33,6 +35,7 @@ class Event {
     ) {
         self.id = id
         self.name = name
+        self.desc = desc
         self.venueName = venueName
         self.category = category
         self.date = date

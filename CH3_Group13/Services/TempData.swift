@@ -11,6 +11,7 @@ struct TempData {
 
     static let event1 = Event(
         name: "Bali Beach Volleyball Open",
+        desc: "Open to all skill levels. come play, cheer, and soak up the sun.",
         venueName: "Kuta Beach Court",
         category: ["volleyball", "beach", "outdoor"],
         date: Date().addingTimeInterval(86400),
@@ -22,6 +23,7 @@ struct TempData {
 
     static let event2 = Event(
         name: "Kuta Morning Run",
+        desc: "A casual morning run along the Kuta Beach promenade.",
         venueName: "Kuta Beach Promenade",
         category: ["running", "outdoor", "casual"],
         date: Date().addingTimeInterval(172800),
@@ -32,6 +34,7 @@ struct TempData {
 
     static let event3 = Event(
         name: "Legian Football Kickabout",
+        desc: "A relaxed, friendly football session at Legian Street Field. No experience needed, just bring energy and enjoy the game.",
         venueName: "Legian Street Field",
         category: ["football", "outdoor", "casual"],
         date: Date().addingTimeInterval(259200),
@@ -42,19 +45,20 @@ struct TempData {
                 name: "First Touch",
                 desc: "Take a photo of yourself on the pitch before the match starts.",
                 type: .solo,
-                reward: "⚽ The game begins with you!"
+                reward: "⚽ the game begins with you!"
             ),
             Mission(
                 name: "Goal Moment",
                 desc: "Take a photo right after a goal is scored — celebrate it!",
                 type: .solo,
-                reward: "🎉 You captured a goal moment!"
+                reward: "🎉 That's pure football joy!"
             )
         ]
     )
 
     static let event4 = Event(
         name: "Kuta Basketball Street Jam",
+        desc: "Show up, run some plays, and make some noise.",
         venueName: "Kuta Sports Complex",
         category: ["basketball", "outdoor", "street"],
         date: Date().addingTimeInterval(345600),
@@ -78,6 +82,7 @@ struct TempData {
 
     static let event5 = Event(
         name: "Kuta Cycling Morning Ride",
+        desc: "Enjoy the quiet roads, cool breeze, and stunning sunrise views.",
         venueName: "Kuta Beach Start Point",
         category: ["cycling", "outdoor", "morning"],
         date: Date().addingTimeInterval(432000),
@@ -94,13 +99,14 @@ struct TempData {
                 name: "Finish Line",
                 desc: "Take a photo at the end point of the route.",
                 type: .solo,
-                reward: "Legend on two wheels! 🚴"
+                reward: "🚴 legend on two wheels!"
             )
         ]
     )
 
     static let event6 = Event(
         name: "Tuban Futsal Night",
+        desc: "A fast-paced indoor futsal night at Tuban Arena.",
         venueName: "Tuban Indoor Arena",
         category: ["football", "indoor", "night"],
         date: Date().addingTimeInterval(518400),

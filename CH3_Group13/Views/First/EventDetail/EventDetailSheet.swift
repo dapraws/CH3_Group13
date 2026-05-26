@@ -50,7 +50,7 @@ struct EventDetailSheet: View {
                             .font(.title2)
                             .bold()
                         
-                        Text("The top 10 volleyball players in the world are going to be invited to this event!")
+                        Text(event.desc)
                             .fontWeight(.light)
 
                         HStack(alignment:.top){
