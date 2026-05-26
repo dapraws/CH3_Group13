@@ -10,38 +10,14 @@ import SwiftUI
 
 struct MapView: View {
     
-    @State private var events: [Event] = TempData.allEvents
-    @State private var selectedEvent: Event? = nil
-    @State private var searchText: String = ""
-    @State private var selectedCategory: SportCategory? = nil
-    
-    @State private var position: MapCameraPosition = .region(
-        MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: -8.7184, longitude: 115.1736),
-            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.0)
-        )
-    )
-    
-    private var filteredEvents: [Event] {
-        events.filter { event in
-            let matchesSearch = searchText.isEmpty ||
-            event.name.localizedCaseInsensitiveContains(searchText)
-            let matchesCategory: Bool
-            if let selected = selectedCategory {
-                matchesCategory = SportCategory.from(categories: event.category) == selected
-            } else {
-                matchesCategory = true
-            }
-            return matchesSearch && matchesCategory
-        }
-    }
+    @State private var viewModel = MapViewModel()
     
     var body: some View {
         NavigationStack {
             ZStack(alignment: .top) {
                 
-                Map(position: $position) {
-                    ForEach(filteredEvents) { event in
+                Map(position: $viewModel.position) {
+                    ForEach(viewModel.filteredEvents) { event in
                         Annotation(
                             "",
                             coordinate: CLLocationCoordinate2D(
@@ -51,13 +27,13 @@ struct MapView: View {
                         ) {
                             EventAnnotationView(event: event)
                                 .onTapGesture {
-                                    selectedEvent = event
+                                    viewModel.selectedEvent = event
                                 }
                         }
                     }
                 }
                 .ignoresSafeArea()
-                .sheet(item: $selectedEvent) { event in
+                .sheet(item: $viewModel.selectedEvent) { event in
                     EventDetailSheet(event: event)
                 }
                 
@@ -67,9 +43,9 @@ struct MapView: View {
                             label: "All",
                             icon: "square.grid.2x2",
                             color: .gray,
-                            isSelected: selectedCategory == nil
+                            isSelected: viewModel.selectedCategory == nil
                         ) {
-                            selectedCategory = nil
+                            viewModel.selectedCategory = nil
                         }
                         ForEach(SportCategory.allCases, id: \.self) { category in
                             if category != .other {
@@ -77,12 +53,12 @@ struct MapView: View {
                                     label: category.label,
                                     icon: category.icon,
                                     color: category.color,
-                                    isSelected: selectedCategory == category
+                                    isSelected: viewModel.selectedCategory == category
                                 ) {
-                                    if selectedCategory == category {
-                                        selectedCategory = nil
+                                    if viewModel.selectedCategory == category {
+                                        viewModel.selectedCategory = nil
                                     } else {
-                                        selectedCategory = category
+                                        viewModel.selectedCategory = category
                                     }
                                 }
                             }
@@ -94,7 +70,7 @@ struct MapView: View {
             }
             .navigationTitle("Explore")
             .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always),prompt: "Search events...", )
+            .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always),prompt: "Search events...", )
         }
     }
 }
