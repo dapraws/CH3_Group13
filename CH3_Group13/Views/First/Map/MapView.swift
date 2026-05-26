@@ -45,7 +45,7 @@ enum SportCategory: String, CaseIterable {
 struct MapView: View {
     var events: [Event] = TempData.allEvents
 
-    @State private var locationLauncher = LocationLauncher()
+
     @State private var locationManager  = LocationManager()
 
     @State private var selectedEvent: Event? = nil

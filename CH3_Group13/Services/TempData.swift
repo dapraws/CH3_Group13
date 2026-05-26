@@ -32,7 +32,7 @@ struct TempData {
         longitude: 115.18154401093946,
         maxParticipants: 30,
         currentParticipants: 22,
-        missions: [completedMission]
+        missions: [soloMission2]
     )
     
     static let event3 = Event(
@@ -45,7 +45,7 @@ struct TempData {
         longitude: 115.1687207615662,
         maxParticipants: 25,
         currentParticipants: 10,
-        missions: []
+        missions: [soloMission1]
     )
 
     static let allEvents: [Event] = [event1, event2, event3]
