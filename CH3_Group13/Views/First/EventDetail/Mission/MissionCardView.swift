@@ -14,8 +14,8 @@ struct MissionCardView: View {
     // TODO (Darrel): logic
     var onComplete: (String) -> Void = { _ in }
 
-    @State private var showProof: Bool = false
-    @State private var showReward: Bool = false
+    @State private var viewModel = MissionViewModel()
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
 
@@ -32,7 +32,7 @@ struct MissionCardView: View {
                     .font(.subheadline)
             } else {
                 Button("Complete Mission") {
-                    showProof = true
+                    viewModel.showProof = true
                 }
                 .buttonStyle(.bordered)
             }
@@ -41,14 +41,14 @@ struct MissionCardView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.systemGray6))
         .clipShape(RoundedRectangle(cornerRadius: 12))
-        .sheet(isPresented: $showProof) {
+        .sheet(isPresented: $viewModel.showProof) {
             MissionProofView(
                 mission: $mission,
                 onSubmit: {
                     mission.isCompleted = true
-                    showProof = false
+                    viewModel.showProof = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                        showReward = true
+                        viewModel.showReward = true
                     }
                     onComplete(mission.reward)
                 }
