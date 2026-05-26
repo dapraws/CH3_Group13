@@ -41,12 +41,12 @@ enum SportCategory: String, CaseIterable {
     }
 }
 
-// MARK: - Peta Utama
+// MARK: - Map View
 struct MapView: View {
     var events: [Event] = TempData.allEvents
 
-
-    @State private var locationManager  = LocationManager()
+    // LocationManager — handles GPS permission + real-time tracking
+    @State private var locationManager = LocationManager()
 
     @State private var selectedEvent: Event? = nil
 
@@ -55,7 +55,10 @@ struct MapView: View {
         span: MKCoordinateSpan(latitudeDelta: 0.08, longitudeDelta: 0.08)
     )
 
-    @State private var cameraPosition: MapCameraPosition = .userLocation(fallback: .region(defaultRegion))
+    // Kamera mengikuti lokasi user, fallback ke Kuta jika GPS belum tersedia
+    @State private var cameraPosition: MapCameraPosition = .userLocation(
+        fallback: .region(defaultRegion)
+    )
     @Namespace private var mapScope
 
     @State private var selectedCategory: SportCategory = .all
@@ -64,8 +67,9 @@ struct MapView: View {
 
     var filteredEvents: [Event] {
         events.filter { event in
-            let matchCategory = selectedCategory == .all || event.category.contains(selectedCategory.rawValue.lowercased())
-            let matchSearch   = searchQuery.isEmpty
+            let matchCategory = selectedCategory == .all
+                || event.category.contains(selectedCategory.rawValue.lowercased())
+            let matchSearch = searchQuery.isEmpty
                 || event.name.localizedCaseInsensitiveContains(searchQuery)
                 || event.venueName.localizedCaseInsensitiveContains(searchQuery)
             return matchCategory && matchSearch
@@ -75,6 +79,7 @@ struct MapView: View {
     var body: some View {
         ZStack(alignment: .top) {
             Map(position: $cameraPosition, selection: $selectedEvent, scope: mapScope) {
+                // Dot biru lokasi real-time user
                 UserAnnotation()
 
                 ForEach(filteredEvents) { event in
@@ -89,7 +94,7 @@ struct MapView: View {
             }
             .mapStyle(.standard(elevation: .realistic, showsTraffic: true))
             .mapControls {
-                MapUserLocationButton()
+                MapUserLocationButton() // tombol kembali ke lokasi user
                 MapCompass()
                 MapPitchToggle()
                 MapScaleView()
@@ -111,7 +116,7 @@ struct MapView: View {
     }
 }
 
-// MARK: - Komponen Pencarian
+// MARK: - Top Search Overlay
 struct TopSearchOverlay: View {
     @Binding var searchQuery: String
     @Binding var selectedCategory: SportCategory
@@ -185,6 +190,7 @@ struct TopSearchOverlay: View {
     }
 }
 
+// MARK: - Category Chip
 struct CategoryChip: View {
     let category: SportCategory
     let isSelected: Bool
