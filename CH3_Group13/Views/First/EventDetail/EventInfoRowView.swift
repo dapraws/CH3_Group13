@@ -46,9 +46,9 @@ struct EventInfoRowView: View {
                             string: "http://maps.apple.com/?ll=\(event.latitude),\(event.longitude)"
                         )!
                     ) {
-                        Text("\(event.latitude), \(event.longitude)")
-                            .font(.subheadline)
-                            .foregroundStyle(.blue)
+                        Text(event.venueName)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.blue)
                     }
                 }
                 .padding()

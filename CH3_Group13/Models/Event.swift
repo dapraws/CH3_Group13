@@ -12,6 +12,7 @@ import SwiftData
 class Event {
     @Attribute(.unique) var id: UUID
     var name: String
+    var venueName: String
     var category: [String]
     var date: Date
     var latitude: Double
@@ -22,6 +23,7 @@ class Event {
     init(
         id: UUID = UUID(),
         name: String,
+        venueName: String,
         category: [String] = [],
         date: Date = Date(),
         latitude: Double,
@@ -31,6 +33,7 @@ class Event {
     ) {
         self.id = id
         self.name = name
+        self.venueName = venueName
         self.category = category
         self.date = date
         self.latitude = latitude
@@ -45,6 +48,7 @@ class Event {
         formatter.timeStyle = .none
         return formatter.string(from: date)
     }
+
     var formattedTime: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .none
