@@ -10,12 +10,10 @@ import SwiftUI
 struct MissionCardView: View {
 
     @Binding var mission: Mission
-
-    // TODO (Darrel): logic
     var onComplete: (String) -> Void = { _ in }
 
     @State private var viewModel = MissionViewModel()
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
 
@@ -32,7 +30,7 @@ struct MissionCardView: View {
                     .font(.subheadline)
             } else {
                 Button("Complete Mission") {
-                    viewModel.showProof = true
+                    viewModel.openProof()
                 }
                 .buttonStyle(.bordered)
             }
@@ -44,13 +42,9 @@ struct MissionCardView: View {
         .sheet(isPresented: $viewModel.showProof) {
             MissionProofView(
                 mission: $mission,
+                viewModel: viewModel,
                 onSubmit: {
-                    mission.isCompleted = true
-                    viewModel.showProof = false
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                        viewModel.showReward = true
-                    }
-                    onComplete(mission.reward)
+                    viewModel.submitProof(mission: &mission, onComplete: onComplete)
                 }
             )
         }
@@ -58,15 +52,11 @@ struct MissionCardView: View {
 }
 
 #Preview("Incomplete") {
-    MissionCardView(
-        mission: .constant(TempData.soloMission1)
-    )
-    .padding()
+    MissionCardView(mission: .constant(TempData.soloMission1))
+        .padding()
 }
 
 #Preview("Completed") {
-    MissionCardView(
-        mission: .constant(TempData.completedMission)
-    )
-    .padding()
+    MissionCardView(mission: .constant(TempData.completedMission))
+        .padding()
 }

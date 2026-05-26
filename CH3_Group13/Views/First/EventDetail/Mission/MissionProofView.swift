@@ -6,16 +6,14 @@
 //
 
 import SwiftUI
-import PhotosUI
 
 struct MissionProofView: View {
 
     @Binding var mission: Mission
+    var viewModel: MissionViewModel
     var onSubmit: () -> Void = {}
 
-    @State private var selectedItem: PhotosPickerItem? = nil
-
-    @State private var previewImage: Image? = nil
+    @State private var showCamera: Bool = false
 
     var body: some View {
         VStack(spacing: 24) {
@@ -28,57 +26,66 @@ struct MissionProofView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
 
-            PhotosPicker(
-                selection: $selectedItem,
-                matching: .images
-            ) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.gray.opacity(0.15))
+            ZStack {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.gray.opacity(0.15))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 200)
+
+                if let previewImage = viewModel.previewImage {
+                    previewImage
+                        .resizable()
+                        .scaledToFill()
                         .frame(maxWidth: .infinity)
                         .frame(height: 200)
-
-                    if let previewImage {
-                        previewImage
-                            .resizable()
-                            .scaledToFill()
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 200)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                    } else {
-                        VStack(spacing: 8) {
-                            Image(systemName: "camera")
-                                .font(.largeTitle)
-                                .foregroundStyle(.gray)
-
-                            Text("Tap to pick a photo")
-                                .font(.caption)
-                                .foregroundStyle(.gray)
-                        }
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                } else {
+                    VStack(spacing: 8) {
+                        Image(systemName: "camera")
+                            .font(.largeTitle)
+                            .foregroundStyle(.gray)
+                        Text("Tap to take a photo")
+                            .font(.caption)
+                            .foregroundStyle(.gray)
                     }
                 }
             }
+            .onTapGesture {
+                showCamera = true
+            }
+
+            if viewModel.previewImage != nil {
+                Button("Retake") {
+                    showCamera = true
+                }
+                .foregroundStyle(.secondary)
+            }
 
             Button("Submit Proof") {
-                // TODO (Darrel): logic
                 onSubmit()
             }
             .buttonStyle(.borderedProminent)
-            .disabled(previewImage == nil)
-
+            .disabled(viewModel.previewImage == nil)
         }
         .padding()
-        .onChange(of: selectedItem) { _, newItem in
-            Task {
-                if let data = try? await newItem?.loadTransferable(type: Data.self),
-                   let uiImage = UIImage(data: data) {
-                    previewImage = Image(uiImage: uiImage)
+        .fullScreenCover(isPresented: $showCamera) {
+            CameraPickerView(
+                onImagePicked: { uiImage in
+                    viewModel.setImage(uiImage)
+                    showCamera = false
+                },
+                onCancel: {
+                    showCamera = false
                 }
-            }
+            )
+            .ignoresSafeArea()
         }
     }
 }
 
 #Preview {
-    MissionProofView(mission: .constant(TempData.soloMission1))
+    MissionProofView(
+        mission: .constant(TempData.soloMission1),
+        viewModel: MissionViewModel()
+    )
 }

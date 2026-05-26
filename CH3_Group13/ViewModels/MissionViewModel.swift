@@ -11,10 +11,18 @@ import SwiftUI
 class MissionViewModel {
 
     var showProof: Bool = false
-    var showReward: Bool = false
+    var previewImage: Image? = nil
 
     func openProof() {
         showProof = true
+    }
+
+    func setImage(_ uiImage: UIImage) {
+        previewImage = Image(uiImage: uiImage)
+    }
+
+    func clearImage() {
+        previewImage = nil
     }
 
     func submitProof(mission: inout Mission, onComplete: (String) -> Void) {
