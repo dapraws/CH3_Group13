@@ -37,9 +37,12 @@ struct MapView: View {
                     }
                 }
                 .ignoresSafeArea()
-                .sheet(item: $viewModel.selectedEvent, onDismiss: {
-                    viewModel.deselectEvent()
-                }) { event in
+                .sheet(
+                    item: $viewModel.selectedEvent,
+                    onDismiss: {
+                        viewModel.deselectEvent()
+                    }
+                ) { event in
                     EventDetailSheet(event: event)
                 }
 
@@ -83,6 +86,13 @@ struct MapView: View {
                 placement: .navigationBarDrawer(displayMode: .always),
                 prompt: "Search events...",
             )
+        }
+        .onAppear {
+            viewModel.locationManager.requestPermission()
+            viewModel.locationManager.startUpdating()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                viewModel.centerOnUser()
+            }
         }
     }
 }
