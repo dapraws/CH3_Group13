@@ -9,13 +9,14 @@ import MapKit
 import SwiftUI
 
 struct MapView: View {
-    
+
     @State private var viewModel = MapViewModel()
-    
+    @Namespace private var mapScope
+
     var body: some View {
         NavigationStack {
             ZStack(alignment: .top) {
-                
+
                 Map(position: $viewModel.position) {
                     ForEach(viewModel.filteredEvents) { event in
                         Annotation(
@@ -25,18 +26,23 @@ struct MapView: View {
                                 longitude: event.longitude
                             )
                         ) {
-                            EventAnnotationView(event: event)
-                                .onTapGesture {
-                                    viewModel.selectedEvent = event
-                                }
+                            EventAnnotationView(
+                                event: event,
+                                viewModel: viewModel
+                            )
+                            .onTapGesture {
+                                viewModel.selectEvent(event)
+                            }
                         }
                     }
                 }
                 .ignoresSafeArea()
-                .sheet(item: $viewModel.selectedEvent) { event in
+                .sheet(item: $viewModel.selectedEvent, onDismiss: {
+                    viewModel.deselectEvent()
+                }) { event in
                     EventDetailSheet(event: event)
                 }
-                
+
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
                         FilterChip(
@@ -47,13 +53,15 @@ struct MapView: View {
                         ) {
                             viewModel.selectedCategory = nil
                         }
-                        ForEach(SportCategory.allCases, id: \.self) { category in
+                        ForEach(SportCategory.allCases, id: \.self) {
+                            category in
                             if category != .other {
                                 FilterChip(
                                     label: category.label,
                                     icon: category.icon,
                                     color: category.color,
-                                    isSelected: viewModel.selectedCategory == category
+                                    isSelected: viewModel.selectedCategory
+                                        == category
                                 ) {
                                     if viewModel.selectedCategory == category {
                                         viewModel.selectedCategory = nil
@@ -70,7 +78,11 @@ struct MapView: View {
             }
             .navigationTitle("Explore")
             .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always),prompt: "Search events...", )
+            .searchable(
+                text: $viewModel.searchText,
+                placement: .navigationBarDrawer(displayMode: .always),
+                prompt: "Search events...",
+            )
         }
     }
 }
@@ -81,7 +93,7 @@ private struct FilterChip: View {
     var color: Color
     var isSelected: Bool
     var onTap: () -> Void
-    
+
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 6) {
