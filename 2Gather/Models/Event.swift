@@ -14,6 +14,7 @@ class Event {
     var name: String
     var desc: String
     var venueName: String
+    var host: String
     var category: [String]
     var date: Date
     var latitude: Double
@@ -26,6 +27,7 @@ class Event {
         name: String,
         desc: String,
         venueName: String,
+        host: String = "Anonymous",
         category: [String] = [],
         date: Date = Date(),
         latitude: Double,
@@ -37,6 +39,7 @@ class Event {
         self.name = name
         self.desc = desc
         self.venueName = venueName
+        self.host = host
         self.category = category
         self.date = date
         self.latitude = latitude
