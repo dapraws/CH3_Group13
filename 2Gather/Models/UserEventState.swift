@@ -12,9 +12,13 @@ import SwiftData
 class UserEventState {
     @Attribute(.unique) var eventId: UUID
     var joinedAt: Date?
+    var isCompleted: Bool
+    var proofImagePath: String?
 
     init(eventId: UUID) {
         self.eventId = eventId
         self.joinedAt = Date()
+        self.isCompleted = false
+        self.proofImagePath = nil
     }
 }
