@@ -47,18 +47,19 @@ struct TempData {
         date: Date().addingTimeInterval(86400),
         latitude: -8.7184,
         longitude: 115.1686,
-        photoPath: "bali-beach-volleyball",
+        photoPath: "volleyball-bali",
         missions: [soloMission1, soloMission2]
     )
     static let event2 = Event(
-        name: "Kuta Morning Run",
-        desc: "A casual morning run along the Kuta Beach promenade.",
-        venueName: "Kuta Beach Promenade",
-        host: "Wayan Runners Club",
+        name: "Sunset Run",
+        desc: "A casual sunset run along the Kuta Beach promenade.",
+        venueName: "Pantai Jerman",
+        host: "command run",
         category: ["running", "outdoor", "casual"],
         date: Date().addingTimeInterval(172800),
-        latitude: -8.7220,
-        longitude: 115.1680,
+        latitude: -8.734574575259003,
+        longitude: 115.16339702588904,
+        photoPath: "run-bali",
         missions: [completedMission]
     )
     static let event3 = Event(
@@ -71,6 +72,7 @@ struct TempData {
         date: Date().addingTimeInterval(259200),
         latitude: -8.7080,
         longitude: 115.1670,
+        photoPath: "football-bali",
         missions: [
             Mission(
                 name: "First Touch",
@@ -90,6 +92,7 @@ struct TempData {
         date: Date().addingTimeInterval(345600),
         latitude: -8.7195,
         longitude: 115.1710,
+        photoPath: "basket-bali",
         missions: [
             Mission(
                 name: "Court Arrival",
@@ -109,6 +112,7 @@ struct TempData {
         date: Date().addingTimeInterval(432000),
         latitude: -8.7160,
         longitude: 115.1695,
+        photoPath: "cycling-bali",
         missions: [
             Mission(
                 name: "Sunrise Proof",
@@ -119,14 +123,15 @@ struct TempData {
         ]
     )
     static let event6 = Event(
-        name: "Tuban Futsal Night",
-        desc: "A fast-paced indoor futsal night at Tuban Arena.",
-        venueName: "Tuban Indoor Arena",
-        host: "Tuban FC",
+        name: "Arjuna Futsal Night",
+        desc: "A fast-paced indoor futsal night at Arjuna Arena.",
+        venueName: "Arjuna Indoor Arena",
+        host: "Arjuna FC",
         category: ["football", "indoor", "night"],
         date: Date().addingTimeInterval(518400),
-        latitude: -8.7250,
-        longitude: 115.1720,
+        latitude: -8.727050637638651,
+        longitude: 115.17908040547496,
+        photoPath: "futsal-bali",
         missions: [
             Mission(
                 name: "Team Photo",
@@ -146,6 +151,7 @@ struct TempData {
         date: Date().addingTimeInterval(604800),
         latitude: -8.6910,
         longitude: 115.1560,
+        photoPath: "yoga-bali",
         missions: [
             Mission(
                 name: "Zen Moment",
@@ -164,8 +170,9 @@ struct TempData {
         host: "Ritmo Bali",
         category: ["indoor", "dancing"],
         date: Date().addingTimeInterval(691200),
-        latitude: -8.7200,
-        longitude: 115.1750,
+        latitude: -8.737067123211615,
+        longitude: 115.17565970508035,
+        photoPath: "latin-dance",
         missions: [
             Mission(
                 name: "Dance Floor Proof",
