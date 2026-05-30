@@ -33,6 +33,8 @@ struct MissionCardView: View {
                     viewModel.openProof()
                 }
                 .buttonStyle(.bordered)
+                .tint(.gray)
+                .foregroundStyle(.blue)
             }
         }
         .padding()
@@ -44,7 +46,10 @@ struct MissionCardView: View {
                 mission: $mission,
                 viewModel: viewModel,
                 onSubmit: {
-                    viewModel.submitProof(mission: &mission, onComplete: onComplete)
+                    viewModel.submitProof(
+                        mission: &mission,
+                        onComplete: onComplete
+                    )
                 }
             )
         }

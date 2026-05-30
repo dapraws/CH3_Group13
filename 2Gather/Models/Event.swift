@@ -14,35 +14,38 @@ class Event {
     var name: String
     var desc: String
     var venueName: String
+    var host: String
     var category: [String]
     var date: Date
     var latitude: Double
     var longitude: Double
     var photoPath: String?
-    @Relationship(deleteRule: .cascade) var missions: [Mission]
+    @Relationship(deleteRule: .cascade) var mission: Mission
 
     init(
         id: UUID = UUID(),
         name: String,
         desc: String,
         venueName: String,
+        host: String = "Anonymous",
         category: [String] = [],
         date: Date = Date(),
         latitude: Double,
         longitude: Double,
         photoPath: String? = nil,
-        missions: [Mission] = []
+        mission: Mission
     ) {
         self.id = id
         self.name = name
         self.desc = desc
         self.venueName = venueName
+        self.host = host
         self.category = category
         self.date = date
         self.latitude = latitude
         self.longitude = longitude
         self.photoPath = photoPath
-        self.missions = missions
+        self.mission = mission
     }
 
     var formattedDate: String {

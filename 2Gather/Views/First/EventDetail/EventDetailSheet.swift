@@ -1,32 +1,26 @@
-//
-//  EventDetailSheet.swift
-//  CH3_Group13
-//
-//  Created by Muhammad Darrel Prawira on 23/05/26.
-//
-
 import SwiftUI
 
 struct EventDetailSheet: View {
-    
+
     var event: Event
-    
     @State private var viewModel: EventDetailViewModel
-    
+
     init(event: Event) {
         self.event = event
-        _viewModel = State(initialValue: EventDetailViewModel(missions: event.missions))
+        _viewModel = State(
+            initialValue: EventDetailViewModel(mission: event.mission)
+        )
     }
-    
+
     var body: some View {
         ZStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    
+
                     EventPhotoView(photoPath: event.photoPath)
-                    
+
                     VStack(alignment: .leading, spacing: 16) {
-                        
+
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
                                 ForEach(event.category, id: \.self) { tag in
@@ -40,21 +34,25 @@ struct EventDetailSheet: View {
                                 }
                             }
                         }
-                        
+
                         Text(event.name)
                             .font(.title2)
                             .bold()
-                        
+
+                        // NEW: Added Host Name
+                        Text("Hosted by \(event.host)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .fontWeight(.medium)
+
                         Text(event.desc)
                             .fontWeight(.light)
-                        
-                        HStack(alignment:.top){
-                            EventInfoRowView(event: event)
-                            
-                        }
-                        
+
+                        EventInfoRowView(event: event)
+                            .padding(.vertical, 8)
+
                         MissionSectionView(
-                            missions: $viewModel.missions,
+                            mission: $viewModel.mission,
                             isJoined: viewModel.isJoined,
                             onJoin: {
                                 viewModel.isJoined = true
@@ -67,20 +65,18 @@ struct EventDetailSheet: View {
                     }
                     .padding()
                 }
-                
             }
+
             if viewModel.showReward {
-                Color.white.opacity(0)
+                Color.white.opacity(0.001)
                     .ignoresSafeArea()
                     .onTapGesture {
                         viewModel.showReward = false
                     }
-                
+
                 MissionRewardPopup(
                     rewardMessage: viewModel.rewardMessage,
-                    onDismiss: {
-                        viewModel.showReward = false
-                    }
+                    onDismiss: { viewModel.showReward = false }
                 )
                 .transition(.scale.combined(with: .opacity))
             }

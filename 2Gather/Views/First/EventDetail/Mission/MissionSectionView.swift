@@ -1,73 +1,68 @@
-//
-//  MissionSectionView.swift
-//  CH3_Group13
-//
-//  Created by Muhammad Darrel Prawira on 24/05/26.
-//
-
 import SwiftUI
 
 struct MissionSectionView: View {
 
-    @Binding var missions: [Mission]
+    @Binding var mission: Mission
     var isJoined: Bool
     var onJoin: () -> Void
     var onMissionComplete: (String) -> Void = { _ in }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            
+
             if !isJoined {
-                Button("Register", action: onJoin)
-                                        .buttonStyle(.borderedProminent)
-                                        .fontWeight(.semibold)
-                                        .frame(maxWidth: .infinity, alignment: .center)
-                                        .padding()
-                                        .background(Color.blue)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(12)
+                Button {
+                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8))
+                    {
+                        onJoin()
+                    }
+                } label: {
+                    Text("Register for Event")
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                }
+                .buttonStyle(.plain)
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .transition(
+                    .asymmetric(
+                        insertion: .opacity,
+                        removal: .scale(scale: 0.8).combined(with: .opacity)
+                    )
+                )
             }
-            
+
             Divider()
-            Text("Missions")
+            Text("Mission")
                 .font(.headline)
 
             if isJoined {
                 // UNLOCKED
-                ForEach($missions) { $mission in
-                    MissionCardView(
-                        mission: $mission,
-                        onComplete: {
-                            rewardMessage in
-                            onMissionComplete(rewardMessage)
+                MissionCardView(
+                    mission: $mission,
+                    onComplete: { rewardMessage in
+                        onMissionComplete(rewardMessage)
+                    }
+                )
+                .transition(.move(edge: .bottom).combined(with: .opacity))
 
-                        }
-                    )
-                }
             } else {
                 // LOCKED
                 ZStack {
-                    VStack(spacing: 12) {
-                        ForEach($missions) { $mission in
-                            MissionCardView(
-                                mission: $mission,
-                                onComplete: { _ in }
-                            )
-                        }
-                    }
-                    .blur(radius: 4)
-                    .allowsHitTesting(false)  // prevents tapping through the blur
+                    MissionCardView(mission: $mission, onComplete: { _ in })
+                        .blur(radius: 4)
+                        .allowsHitTesting(false)
 
                     VStack(spacing: 12) {
                         Image(systemName: "lock.fill")
                             .font(.largeTitle)
                             .foregroundStyle(.secondary)
-
-                        Text("Join this event to unlock missions")
+                        Text("Join this event to unlock the mission")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
-
                     }
                     .padding()
                     .background(
@@ -75,15 +70,16 @@ struct MissionSectionView: View {
                         in: RoundedRectangle(cornerRadius: 16)
                     )
                 }
+                .transition(.opacity)
             }
         }
-
+        .animation(.default, value: isJoined)
     }
 }
 
 #Preview("Locked") {
     MissionSectionView(
-        missions: .constant(TempData.event1.missions),
+        mission: .constant(TempData.event1.mission),
         isJoined: false,
         onJoin: {}
     )
@@ -92,7 +88,7 @@ struct MissionSectionView: View {
 
 #Preview("Unlocked") {
     MissionSectionView(
-        missions: .constant(TempData.event1.missions),
+        mission: .constant(TempData.event1.mission),
         isJoined: true,
         onJoin: {}
     )
