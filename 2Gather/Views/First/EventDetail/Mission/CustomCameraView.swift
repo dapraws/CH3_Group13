@@ -199,7 +199,7 @@ struct CustomCameraView: View {
                 }
                 .padding(.horizontal, 36)
             }
-            .padding(.bottom, 40)
+            .padding(.bottom, 20)
         }
     }
 }

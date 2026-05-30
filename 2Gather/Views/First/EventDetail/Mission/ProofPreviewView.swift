@@ -33,7 +33,7 @@ struct ProofPreviewView: View {
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(.white)
                             .frame(width: 44, height: 44)
-                            .background(Color.black.opacity(0.5), in: Circle())
+                            .background(Color.white.opacity(0.2), in: Circle())
                     }
                     Spacer()
                 }
@@ -60,7 +60,7 @@ struct ProofPreviewView: View {
                     }
                 }
                 .padding(.horizontal, 20)
-                .padding(.bottom, 40)
+                .padding(.bottom, 20)
             }
         }
         .onTapGesture {
