@@ -5,14 +5,14 @@
 //  Created by Muhammad Darrel Prawira on 23/05/26.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct EventDetailSheet: View {
-    
+
     @Environment(\.modelContext) private var modelContext
     @Query private var userStates: [UserEventState]
-    
+
     var event: Event
     @State private var viewModel: EventDetailViewModel
 
@@ -22,11 +22,11 @@ struct EventDetailSheet: View {
             initialValue: EventDetailViewModel(mission: event.mission)
         )
     }
-    
+
     private var currentUserState: UserEventState? {
         userStates.first(where: { $0.eventId == event.id })
     }
-    
+
     private var isJoined: Bool {
         currentUserState != nil
     }
@@ -71,6 +71,7 @@ struct EventDetailSheet: View {
 
                         MissionSectionView(
                             mission: $viewModel.mission,
+                            eventId: event.id,
                             isJoined: isJoined,
                             onJoin: {
                                 let newState = UserEventState(eventId: event.id)

@@ -10,6 +10,7 @@ import SwiftUI
 struct MissionSectionView: View {
 
     @Binding var mission: Mission
+    var eventId: UUID
     var isJoined: Bool
     var onJoin: () -> Void
     var onMissionComplete: (String) -> Void = { _ in }
@@ -49,6 +50,7 @@ struct MissionSectionView: View {
                 // UNLOCKED
                 MissionCardView(
                     mission: $mission,
+                    eventId: eventId,
                     onComplete: { rewardMessage in
                         onMissionComplete(rewardMessage)
                     }
@@ -58,9 +60,13 @@ struct MissionSectionView: View {
             } else {
                 // LOCKED
                 ZStack {
-                    MissionCardView(mission: $mission, onComplete: { _ in })
-                        .blur(radius: 4)
-                        .allowsHitTesting(false)
+                    MissionCardView(
+                        mission: $mission,
+                        eventId: eventId,
+                        onComplete: { _ in }
+                    )
+                    .blur(radius: 4)
+                    .allowsHitTesting(false)
 
                     VStack(spacing: 12) {
                         Image(systemName: "lock.fill")
@@ -87,6 +93,7 @@ struct MissionSectionView: View {
 #Preview("Locked") {
     MissionSectionView(
         mission: .constant(TempData.event1.mission),
+        eventId: TempData.event1.id,
         isJoined: false,
         onJoin: {}
     )
@@ -96,6 +103,7 @@ struct MissionSectionView: View {
 #Preview("Unlocked") {
     MissionSectionView(
         mission: .constant(TempData.event1.mission),
+        eventId: TempData.event1.id,
         isJoined: true,
         onJoin: {}
     )

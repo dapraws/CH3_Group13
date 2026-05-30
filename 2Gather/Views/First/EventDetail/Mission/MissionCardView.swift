@@ -5,14 +5,21 @@
 //  Created by Muhammad Darrel Prawira on 23/05/26.
 //
 
+import SwiftData
 import SwiftUI
 
 struct MissionCardView: View {
     @Binding var mission: Mission
-    var eventState: UserEventState?
+    var eventId: UUID  // pass eventId instead of eventState
     var onComplete: (String) -> Void = { _ in }
 
+    @Query private var allStates: [UserEventState]
     @State private var viewModel = MissionViewModel()
+
+    // Now we can safely look up the right state reactively
+    private var eventState: UserEventState? {
+        allStates.first(where: { $0.eventId == eventId })
+    }
 
     private var savedImage: UIImage? {
         guard let path = eventState?.proofImagePath else { return nil }
@@ -25,7 +32,6 @@ struct MissionCardView: View {
             Text(mission.desc).font(.subheadline).foregroundStyle(.secondary)
 
             if eventState?.isCompleted == true {
-                // Completed state — show thumbnail + tap to preview
                 HStack(spacing: 12) {
                     if let image = savedImage {
                         Image(uiImage: image)
@@ -58,13 +64,10 @@ struct MissionCardView: View {
                 .padding(.top, 8)
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    if savedImage != nil {
-                        viewModel.showPreview = true
-                    }
+                    if savedImage != nil { viewModel.showPreview = true }
                 }
 
             } else {
-                // Not completed — go straight to camera
                 Button("Complete Mission") {
                     viewModel.showCamera = true
                 }
@@ -76,30 +79,20 @@ struct MissionCardView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.systemGray6))
         .clipShape(RoundedRectangle(cornerRadius: 12))
-
-        // Camera
         .fullScreenCover(isPresented: $viewModel.showCamera) {
             CustomCameraView(
-                onCapture: { image in
-                    viewModel.didCapture(image)
-                },
-                onCancel: {
-                    viewModel.showCamera = false
-                }
+                onCapture: { image in viewModel.didCapture(image) },
+                onCancel: { viewModel.showCamera = false }
             )
         }
-
-        // Proof preview OR completed memory viewer
         .fullScreenCover(isPresented: $viewModel.showPreview) {
             if eventState?.isCompleted == true, let image = savedImage {
-                // Viewing existing memory
                 CompletedMissionPreview(
                     image: image,
                     caption: eventState?.caption,
                     onDismiss: { viewModel.showPreview = false }
                 )
             } else if let image = viewModel.capturedImage {
-                // New submission
                 ProofPreviewView(
                     image: image,
                     onSend: { caption in
@@ -111,9 +104,7 @@ struct MissionCardView: View {
                             onComplete: onComplete
                         )
                     },
-                    onRetake: {
-                        viewModel.retake()
-                    }
+                    onRetake: { viewModel.retake() }
                 )
             }
         }
@@ -121,11 +112,9 @@ struct MissionCardView: View {
 }
 
 #Preview("Incomplete") {
-    MissionCardView(mission: .constant(TempData.soloMission1))
-        .padding()
-}
-
-#Preview("Completed") {
-    MissionCardView(mission: .constant(TempData.completedMission))
-        .padding()
+    MissionCardView(
+        mission: .constant(TempData.soloMission1),
+        eventId: UUID()
+    )
+    .padding()
 }
