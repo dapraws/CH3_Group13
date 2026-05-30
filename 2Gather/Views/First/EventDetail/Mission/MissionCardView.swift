@@ -13,8 +13,7 @@ struct MissionCardView: View {
     var onComplete: (String) -> Void = { _ in }
 
     @State private var viewModel = MissionViewModel()
-    @State private var showPreview = false
-    
+
     private var savedImage: UIImage? {
         guard let path = eventState?.proofImagePath else { return nil }
         return PhotoStorage.loadProofImage(named: path)
@@ -26,7 +25,8 @@ struct MissionCardView: View {
             Text(mission.desc).font(.subheadline).foregroundStyle(.secondary)
 
             if eventState?.isCompleted == true {
-                HStack {
+                // Completed state — show thumbnail + tap to preview
+                HStack(spacing: 12) {
                     if let image = savedImage {
                         Image(uiImage: image)
                             .resizable()
@@ -34,52 +34,86 @@ struct MissionCardView: View {
                             .frame(width: 60, height: 60)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
-                    
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 4) {
                         Label("Completed", systemImage: "checkmark.circle.fill")
-                            .foregroundStyle(.green).font(.subheadline).bold()
-                        Text("Tap to view memory")
-                            .font(.caption).foregroundStyle(.secondary)
+                            .foregroundStyle(.green)
+                            .font(.subheadline)
+                            .bold()
+                        if let caption = eventState?.caption, !caption.isEmpty {
+                            Text(caption)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                        } else {
+                            Text("Tap to view memory")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                     Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
                 .padding(.top, 8)
                 .contentShape(Rectangle())
-                .onTapGesture { if savedImage != nil { showPreview = true } }
-                
+                .onTapGesture {
+                    if savedImage != nil {
+                        viewModel.showPreview = true
+                    }
+                }
+
             } else {
-                Button("Complete Mission") { viewModel.openProof() }
-                    .buttonStyle(.bordered).padding(.top, 8)
+                // Not completed — go straight to camera
+                Button("Complete Mission") {
+                    viewModel.showCamera = true
+                }
+                .buttonStyle(.bordered)
+                .padding(.top, 8)
             }
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.systemGray6))
         .clipShape(RoundedRectangle(cornerRadius: 12))
-        
-        .sheet(isPresented: $viewModel.showProof) {
-            MissionProofView(
-                mission: $mission,
-                viewModel: viewModel,
-                onSubmit: {
-                    if let uiImage = viewModel.rawUIImage {
-                        if let fileName = PhotoStorage.saveProofImage(uiImage, for: mission.id) {
-                            eventState?.proofImagePath = fileName
-                            eventState?.caption = viewModel.captionText
-                            eventState?.isCompleted = true
-                            onComplete(mission.reward)
-                            viewModel.showProof = false
-                        }
-                    }
+
+        // Camera
+        .fullScreenCover(isPresented: $viewModel.showCamera) {
+            CustomCameraView(
+                onCapture: { image in
+                    viewModel.didCapture(image)
+                },
+                onCancel: {
+                    viewModel.showCamera = false
                 }
             )
         }
-        .fullScreenCover(isPresented: $showPreview) {
-            if let image = savedImage {
+
+        // Proof preview OR completed memory viewer
+        .fullScreenCover(isPresented: $viewModel.showPreview) {
+            if eventState?.isCompleted == true, let image = savedImage {
+                // Viewing existing memory
                 CompletedMissionPreview(
                     image: image,
                     caption: eventState?.caption,
-                    onDismiss: { showPreview = false }
+                    onDismiss: { viewModel.showPreview = false }
+                )
+            } else if let image = viewModel.capturedImage {
+                // New submission
+                ProofPreviewView(
+                    image: image,
+                    onSend: { caption in
+                        viewModel.submitProof(
+                            image: image,
+                            caption: caption,
+                            mission: mission,
+                            eventState: eventState,
+                            onComplete: onComplete
+                        )
+                    },
+                    onRetake: {
+                        viewModel.retake()
+                    }
                 )
             }
         }
