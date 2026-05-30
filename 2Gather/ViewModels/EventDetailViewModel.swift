@@ -10,17 +10,12 @@ import SwiftUI
 @Observable
 class EventDetailViewModel {
 
-    var isJoined: Bool = false
     var mission: Mission
     var showReward: Bool = false
     var rewardMessage: String = ""
 
     init(mission: Mission) {
         self.mission = mission
-    }
-
-    func joinEvent() {
-        isJoined = true
     }
 
     func completeMission(_ message: String) {

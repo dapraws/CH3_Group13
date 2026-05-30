@@ -1,7 +1,18 @@
+//
+//  EventDetailSheet.swift
+//  CH3_Group13
+//
+//  Created by Muhammad Darrel Prawira on 23/05/26.
+//
+
 import SwiftUI
+import SwiftData
 
 struct EventDetailSheet: View {
-
+    
+    @Environment(\.modelContext) private var modelContext
+    @Query private var userStates: [UserEventState]
+    
     var event: Event
     @State private var viewModel: EventDetailViewModel
 
@@ -10,6 +21,14 @@ struct EventDetailSheet: View {
         _viewModel = State(
             initialValue: EventDetailViewModel(mission: event.mission)
         )
+    }
+    
+    private var currentUserState: UserEventState? {
+        userStates.first(where: { $0.eventId == event.id })
+    }
+    
+    private var isJoined: Bool {
+        currentUserState != nil
     }
 
     var body: some View {
@@ -39,7 +58,6 @@ struct EventDetailSheet: View {
                             .font(.title2)
                             .bold()
 
-                        // NEW: Added Host Name
                         Text("Hosted by \(event.host)")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
@@ -53,11 +71,15 @@ struct EventDetailSheet: View {
 
                         MissionSectionView(
                             mission: $viewModel.mission,
-                            isJoined: viewModel.isJoined,
+                            isJoined: isJoined,
                             onJoin: {
-                                viewModel.isJoined = true
+                                let newState = UserEventState(eventId: event.id)
+                                modelContext.insert(newState)
                             },
                             onMissionComplete: { message in
+                                if let state = currentUserState {
+                                    state.isCompleted = true
+                                }
                                 viewModel.rewardMessage = message
                                 viewModel.showReward = true
                             }
