@@ -20,10 +20,7 @@ class MapViewModel {
     var locationManager = LocationManager()
 
     var position: MapCameraPosition = .region(
-        MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: -8.7184, longitude: 115.1736),
-            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-        )
+        MKCoordinateRegion()
     )
     
     func centerOnUser() {

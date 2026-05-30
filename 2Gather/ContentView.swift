@@ -15,26 +15,32 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
+            Text("Home — coming soon")
+                .tabItem {
+                    Label("Home", systemImage: "house")
+                }
             MapView()
                 .tabItem {
                     Label("Explore", systemImage: "map")
                 }
-            Text("My Missions — coming soon")
-                .tabItem {
-                    Label("Missions", systemImage: "list.bullet")
-                }
-            Text("Profile — coming soon")
-                .tabItem {
-                    Label("Profile", systemImage: "person")
-                }
         }
         .onAppear {
+            seedDataIfNeeded()
+//            // debug
+//            let docs = FileManager.default.urls(
+//                for: .documentDirectory,
+//                in: .userDomainMask
+//            )[0]
+//            let files = try? FileManager.default.contentsOfDirectory(
+//                atPath: docs.path
+//            )
+//            print("📄 Files: \(files ?? [])")
 
         }
     }
 
     private func seedDataIfNeeded() {
-        guard events.isEmpty else { return } 
+        guard events.isEmpty else { return }
         for event in TempData.allEvents {
             modelContext.insert(event)
         }

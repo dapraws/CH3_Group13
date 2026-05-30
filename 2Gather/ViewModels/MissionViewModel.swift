@@ -10,24 +10,42 @@ import SwiftUI
 @Observable
 class MissionViewModel {
 
-    var showProof: Bool = false
-    var previewImage: Image? = nil
+    var showCamera = false
+    var showPreview = false
+    var capturedImage: UIImage? = nil
 
-    func openProof() {
-        showProof = true
+    func didCapture(_ image: UIImage) {
+        capturedImage = image
+        showCamera = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.showPreview = true
+        }
     }
 
-    func setImage(_ uiImage: UIImage) {
-        previewImage = Image(uiImage: uiImage)
+    func retake() {
+        showPreview = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.showCamera = true
+        }
     }
 
-    func clearImage() {
-        previewImage = nil
-    }
-
-    func submitProof(mission: inout Mission, onComplete: (String) -> Void) {
-        mission.isCompleted = true
-        showProof = false
-        onComplete(mission.reward)
+    func submitProof(
+        image: UIImage,
+        caption: String,
+        mission: Mission,
+        eventState: UserEventState?,
+        onComplete: (String) -> Void
+    ) {
+        if let fileName = PhotoStorage.saveProofImage(image, for: mission.id) {
+//            print("✅ Photo saved: \(fileName)") // debug
+            eventState?.proofImagePath = fileName
+            eventState?.proofImagePath = fileName
+            eventState?.caption = caption
+            eventState?.isCompleted = true
+            onComplete(mission.reward)
+        } else {
+//            print("❌ Photo save failed") // debug
+        }
+        showPreview = false
     }
 }
