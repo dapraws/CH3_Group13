@@ -11,12 +11,12 @@ import SwiftUI
 class EventDetailViewModel {
 
     var isJoined: Bool = false
-    var missions: [Mission]
+    var mission: Mission
     var showReward: Bool = false
     var rewardMessage: String = ""
 
-    init(missions: [Mission]) {
-        self.missions = missions
+    init(mission: Mission) {
+        self.mission = mission
     }
 
     func joinEvent() {
