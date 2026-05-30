@@ -6,12 +6,23 @@
 //
 
 import MapKit
+import SwiftData
 import SwiftUI
 
 struct MapView: View {
 
     @State private var viewModel = MapViewModel()
     @Namespace private var mapScope
+
+    @Query private var userStates: [UserEventState]
+
+    private var joinedEventIds: Set<UUID> {
+        Set(userStates.map { $0.eventId })
+    }
+
+    private var displayedEvents: [Event] {
+        viewModel.filteredEvents(joinedEventIds: joinedEventIds)
+    }
 
     var body: some View {
         NavigationStack {
@@ -20,7 +31,7 @@ struct MapView: View {
                 Map(position: $viewModel.position) {
                     UserAnnotation()
 
-                    ForEach(viewModel.filteredEvents, id: \.id) { event in
+                    ForEach(displayedEvents, id: \.id) { event in
                         Annotation(
                             "",
                             coordinate: CLLocationCoordinate2D(
@@ -28,9 +39,16 @@ struct MapView: View {
                                 longitude: event.longitude
                             )
                         ) {
+
+                            let state = userStates.first(where: {
+                                $0.eventId == event.id
+                            })
+
                             EventAnnotationView(
                                 event: event,
-                                viewModel: viewModel
+                                viewModel: viewModel,
+                                isJoined: state != nil,
+                                isCompleted: state?.isCompleted ?? false
                             )
                             .onTapGesture {
                                 viewModel.selectAndZoom(event)
@@ -41,27 +59,42 @@ struct MapView: View {
                 .ignoresSafeArea()
                 .sheet(
                     item: $viewModel.selectedEvent,
-                    onDismiss: {
-                        viewModel.deselectEvent()
-                    }
+                    onDismiss: { viewModel.deselectEvent() }
                 ) { event in
                     EventDetailSheet(event: event)
                 }
 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
-                        FilterChip(
+
+                        FilterChipView(
+                            label: "Active",
+                            icon: "bolt.fill",
+                            color: .blue,
+                            isSelected: viewModel.showActiveOnly
+                        ) {
+                            viewModel.showActiveOnly.toggle()
+                            viewModel.zoomToFit(events: displayedEvents)
+                        }
+
+                        Divider().frame(height: 20)
+
+                        FilterChipView(
                             label: "All",
                             icon: "square.grid.2x2",
                             color: .gray,
                             isSelected: viewModel.selectedCategory == nil
+                                && !viewModel.showActiveOnly
                         ) {
                             viewModel.selectedCategory = nil
+                            viewModel.showActiveOnly = false
+                            viewModel.zoomToFit(events: viewModel.events)
                         }
+
                         ForEach(SportCategory.allCases, id: \.self) {
                             category in
                             if category != .other {
-                                FilterChip(
+                                FilterChipView(
                                     label: category.label,
                                     icon: category.icon,
                                     color: category.color,
@@ -73,6 +106,7 @@ struct MapView: View {
                                     } else {
                                         viewModel.selectedCategory = category
                                     }
+                                    viewModel.zoomToFit(events: displayedEvents)
                                 }
                             }
                         }
@@ -100,8 +134,11 @@ struct MapView: View {
             .searchable(
                 text: $viewModel.searchText,
                 placement: .navigationBarDrawer(displayMode: .always),
-                prompt: "Search events...",
+                prompt: "Search events..."
             )
+            .onChange(of: viewModel.searchText) { _, _ in
+                viewModel.zoomToFit(events: displayedEvents)
+            }
         }
         .onAppear {
             viewModel.locationManager.requestPermission()

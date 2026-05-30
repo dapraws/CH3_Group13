@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct FilterChip: View {
+struct FilterChipView: View {
     var label: String
     var icon: String
     var color: Color
