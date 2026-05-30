@@ -22,6 +22,7 @@ struct ProofPreviewView: View {
             // Full screen photo
             Image(uiImage: image)
                 .resizable()
+                .background()
                 .scaledToFit()
                 .ignoresSafeArea()
 

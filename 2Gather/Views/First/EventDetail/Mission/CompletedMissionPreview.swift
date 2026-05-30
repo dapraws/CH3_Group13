@@ -20,9 +20,12 @@ struct CompletedMissionPreview: View {
                 HStack {
                     Spacer()
                     Button(action: onDismiss) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.system(size: 30))
-                            .foregroundColor(.white.opacity(0.8))
+                        Image(systemName: "xmark")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(width: 44, height: 44)
+                            .background(Color.white.opacity(0.2), in: Circle())
+
                     }
                     .padding()
                 }
@@ -30,12 +33,12 @@ struct CompletedMissionPreview: View {
             }
             .zIndex(1)
 
-            VStack(spacing: 20) {
+            ZStack(alignment: .bottom) {
                 Image(uiImage: image)
                     .resizable()
+                    .background()
                     .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .padding(.horizontal)
+                    .ignoresSafeArea()
 
                 if let caption = caption, !caption.isEmpty {
                     Text(caption)
@@ -50,4 +53,28 @@ struct CompletedMissionPreview: View {
             }
         }
     }
+}
+
+#Preview {
+    CompletedMissionPreview(
+        image: UIImage(systemName: "figure.volleyball")?.withTintColor(.red) ?? UIImage(),
+        caption: "Caught the perfect spike! 🏐",
+        onDismiss: {}
+    )
+}
+
+#Preview("No Caption") {
+    CompletedMissionPreview(
+        image: UIImage(systemName: "figure.run") ?? UIImage(),
+        caption: nil,
+        onDismiss: {}
+    )
+}
+
+#Preview("With Asset Image") {
+    CompletedMissionPreview(
+        image: UIImage(named: "volleyball-bali") ?? UIImage(),
+        caption: "Caught the perfect spike! 🏐",
+        onDismiss: {}
+    )
 }
