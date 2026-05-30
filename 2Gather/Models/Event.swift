@@ -20,7 +20,7 @@ class Event {
     var latitude: Double
     var longitude: Double
     var photoPath: String?
-    @Relationship(deleteRule: .cascade) var missions: [Mission]
+    @Relationship(deleteRule: .cascade) var mission: Mission
 
     init(
         id: UUID = UUID(),
@@ -33,7 +33,7 @@ class Event {
         latitude: Double,
         longitude: Double,
         photoPath: String? = nil,
-        missions: [Mission] = []
+        mission: Mission
     ) {
         self.id = id
         self.name = name
@@ -45,7 +45,7 @@ class Event {
         self.latitude = latitude
         self.longitude = longitude
         self.photoPath = photoPath
-        self.missions = missions
+        self.mission = mission
     }
 
     var formattedDate: String {
