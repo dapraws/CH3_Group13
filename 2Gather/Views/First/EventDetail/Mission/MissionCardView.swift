@@ -8,50 +8,80 @@
 import SwiftUI
 
 struct MissionCardView: View {
-
     @Binding var mission: Mission
+    var eventState: UserEventState?
     var onComplete: (String) -> Void = { _ in }
 
     @State private var viewModel = MissionViewModel()
+    @State private var showPreview = false
+    
+    private var savedImage: UIImage? {
+        guard let path = eventState?.proofImagePath else { return nil }
+        return PhotoStorage.loadProofImage(named: path)
+    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(mission.name).font(.headline)
+            Text(mission.desc).font(.subheadline).foregroundStyle(.secondary)
 
-            Text(mission.name)
-                .font(.headline)
-
-            Text(mission.desc)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            if mission.isCompleted {
-                Label("Completed", systemImage: "checkmark.circle.fill")
-                    .foregroundStyle(.green)
-                    .font(.subheadline)
-            } else {
-                Button("Complete Mission") {
-                    viewModel.openProof()
+            if eventState?.isCompleted == true {
+                HStack {
+                    if let image = savedImage {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 60, height: 60)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                    
+                    VStack(alignment: .leading) {
+                        Label("Completed", systemImage: "checkmark.circle.fill")
+                            .foregroundStyle(.green).font(.subheadline).bold()
+                        Text("Tap to view memory")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                    Spacer()
                 }
-                .buttonStyle(.bordered)
-                .tint(.gray)
-                .foregroundStyle(.blue)
+                .padding(.top, 8)
+                .contentShape(Rectangle())
+                .onTapGesture { if savedImage != nil { showPreview = true } }
+                
+            } else {
+                Button("Complete Mission") { viewModel.openProof() }
+                    .buttonStyle(.bordered).padding(.top, 8)
             }
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.systemGray6))
         .clipShape(RoundedRectangle(cornerRadius: 12))
+        
         .sheet(isPresented: $viewModel.showProof) {
             MissionProofView(
                 mission: $mission,
                 viewModel: viewModel,
                 onSubmit: {
-                    viewModel.submitProof(
-                        mission: &mission,
-                        onComplete: onComplete
-                    )
+                    if let uiImage = viewModel.rawUIImage {
+                        if let fileName = PhotoStorage.saveProofImage(uiImage, for: mission.id) {
+                            eventState?.proofImagePath = fileName
+                            eventState?.caption = viewModel.captionText
+                            eventState?.isCompleted = true
+                            onComplete(mission.reward)
+                            viewModel.showProof = false
+                        }
+                    }
                 }
             )
+        }
+        .fullScreenCover(isPresented: $showPreview) {
+            if let image = savedImage {
+                CompletedMissionPreview(
+                    image: image,
+                    caption: eventState?.caption,
+                    onDismiss: { showPreview = false }
+                )
+            }
         }
     }
 }
