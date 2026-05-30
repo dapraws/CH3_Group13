@@ -14,11 +14,13 @@ class UserEventState {
     var joinedAt: Date?
     var isCompleted: Bool
     var proofImagePath: String?
+    var caption: String?
 
     init(eventId: UUID) {
         self.eventId = eventId
         self.joinedAt = Date()
         self.isCompleted = false
         self.proofImagePath = nil
+        self.caption = nil
     }
 }

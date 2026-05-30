@@ -12,22 +12,24 @@ class MissionViewModel {
 
     var showProof: Bool = false
     var previewImage: Image? = nil
+    var rawUIImage: UIImage? = nil
+    var captionText: String = "" 
 
     func openProof() {
         showProof = true
+        previewImage = nil
+        rawUIImage = nil
+        captionText = ""
     }
 
     func setImage(_ uiImage: UIImage) {
+        rawUIImage = uiImage
         previewImage = Image(uiImage: uiImage)
     }
 
     func clearImage() {
         previewImage = nil
-    }
-
-    func submitProof(mission: inout Mission, onComplete: (String) -> Void) {
-        mission.isCompleted = true
-        showProof = false
-        onComplete(mission.reward)
+        rawUIImage = nil
+        captionText = ""
     }
 }
