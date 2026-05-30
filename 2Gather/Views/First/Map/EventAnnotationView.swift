@@ -27,11 +27,14 @@ struct EventAnnotationView: View {
                 // If completed, show a green ring. If joined, show a blue ring. (No theme colors)
                 Circle()
                     .stroke(
-                        isCompleted ? Color.green : (isJoined ? Color.yellow : .clear),
+                        isCompleted
+                            ? Color.green : (isJoined ? Color.yellow : .clear),
                         lineWidth: isJoined || isCompleted ? 4 : 0
                     )
                     .frame(width: 52, height: 52)
-                    .opacity(isSelected ? 1 : (isJoined || isCompleted ? 0.8 : 0))
+                    .opacity(
+                        isSelected ? 1 : (isJoined || isCompleted ? 0.8 : 0)
+                    )
 
                 Circle()
                     .fill(sport.color.opacity(0.25))
@@ -57,10 +60,36 @@ struct EventAnnotationView: View {
             Image(systemName: "arrowtriangle.down.fill")
                 .font(.system(size: 10))
                 .foregroundStyle(isCompleted ? Color.green : sport.color)
-                .offset(y: isSelected ? -3 :-9)
+                .offset(y: isSelected ? -3 : -9)
         }
-        .animation(.spring(response: 0.3, dampingFraction: 0.55), value: isSelected)
+        .animation(
+            .spring(response: 0.3, dampingFraction: 0.55),
+            value: isSelected
+        )
     }
+}
+
+#Preview("All") {
+    ZStack {
+        Color.gray.opacity(0.4)
+
+        HStack {
+            EventAnnotationView(
+                event: TempData.event1,
+                viewModel: MapViewModel()
+            )
+            EventAnnotationView(
+                event: TempData.event2,
+                viewModel: MapViewModel(),
+                isJoined: true
+            )
+            EventAnnotationView(
+                event: TempData.event4,
+                viewModel: MapViewModel(),
+                isCompleted: true
+            )
+        }
+    }.ignoresSafeArea()
 }
 
 #Preview("Volleyball - Default") {
@@ -68,9 +97,17 @@ struct EventAnnotationView: View {
 }
 
 #Preview("Running - Joined") {
-    EventAnnotationView(event: TempData.event2, viewModel: MapViewModel(), isJoined: true)
+    EventAnnotationView(
+        event: TempData.event2,
+        viewModel: MapViewModel(),
+        isJoined: true
+    )
 }
 
 #Preview("Basketball - Completed") {
-    EventAnnotationView(event: TempData.event4, viewModel: MapViewModel(), isCompleted: true)
+    EventAnnotationView(
+        event: TempData.event4,
+        viewModel: MapViewModel(),
+        isCompleted: true
+    )
 }
