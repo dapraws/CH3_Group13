@@ -18,7 +18,9 @@ struct MapView: View {
             ZStack(alignment: .top) {
 
                 Map(position: $viewModel.position) {
-                    ForEach(viewModel.filteredEvents) { event in
+                    UserAnnotation()
+
+                    ForEach(viewModel.filteredEvents, id: \.id) { event in
                         Annotation(
                             "",
                             coordinate: CLLocationCoordinate2D(
@@ -31,7 +33,7 @@ struct MapView: View {
                                 viewModel: viewModel
                             )
                             .onTapGesture {
-                                viewModel.selectEvent(event)
+                                viewModel.selectAndZoom(event)
                             }
                         }
                     }
@@ -79,6 +81,20 @@ struct MapView: View {
                 }
                 .padding(.top, -5)
             }
+            .overlay(alignment: .bottomTrailing) {
+                Button {
+                    viewModel.centerOnUser()
+                } label: {
+                    Image(systemName: "location.fill")
+                        .font(.title3)
+                        .foregroundStyle(.white)
+                        .padding(12)
+                        .background(.blue, in: Circle())
+                        .shadow(radius: 4)
+                }
+                .padding(.trailing, 16)
+                .padding(.bottom, 0)
+            }
             .navigationTitle("Explore")
             .navigationBarTitleDisplayMode(.inline)
             .searchable(
@@ -93,31 +109,6 @@ struct MapView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 viewModel.centerOnUser()
             }
-        }
-    }
-}
-
-private struct FilterChip: View {
-    var label: String
-    var icon: String
-    var color: Color
-    var isSelected: Bool
-    var onTap: () -> Void
-
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 6) {
-                Image(systemName: icon)
-                    .font(.system(size: 12, weight: .semibold))
-                Text(label)
-                    .font(.caption)
-                    .fontWeight(.semibold)
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(isSelected ? color : Color(.systemGray6))
-            .foregroundStyle(isSelected ? .white : .primary)
-            .clipShape(Capsule())
         }
     }
 }

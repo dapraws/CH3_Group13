@@ -68,4 +68,17 @@ class MapViewModel {
             return matchesSearch && matchesCategory
         }
     }
+    
+    func selectAndZoom(_ event: Event) {
+        highlightedEventId = event.id
+        selectedEvent = event
+        withAnimation(.easeInOut(duration: 0.4)) {
+            position = .region(
+                MKCoordinateRegion(
+                    center: CLLocationCoordinate2D(latitude: event.latitude, longitude: event.longitude),
+                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                )
+            )
+        }
+    }
 }
