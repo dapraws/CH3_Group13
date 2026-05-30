@@ -37,10 +37,14 @@ class MissionViewModel {
         onComplete: (String) -> Void
     ) {
         if let fileName = PhotoStorage.saveProofImage(image, for: mission.id) {
+//            print("✅ Photo saved: \(fileName)") // debug
+            eventState?.proofImagePath = fileName
             eventState?.proofImagePath = fileName
             eventState?.caption = caption
             eventState?.isCompleted = true
             onComplete(mission.reward)
+        } else {
+//            print("❌ Photo save failed") // debug
         }
         showPreview = false
     }
